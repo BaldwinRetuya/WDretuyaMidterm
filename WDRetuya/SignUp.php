@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'DataBase.php'; 
+include 'DataBase.php'; // Include the database connection file
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
     // Collect form data
@@ -11,8 +11,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
     $last_name = $_POST['last_name'];
     $birthdate = $_POST['birthdate'];
 
+    // Check if passwords match
     if ($password !== $confirm_password) {
         echo "<script>alert('Passwords do not match!');</script>";
+    }
+    // Check password length
+    elseif (strlen($password) < 8) {
+        echo "<script>alert('Password must be at least 8 characters long!');</script>";
     } else {
         $stmt = $conn->prepare("SELECT * FROM signup WHERE email = ?");
         $stmt->bind_param("s", $email);
@@ -28,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
             $stmt->bind_param("ssssss", $email, $hashed_password, $first_name, $last_name, $birthdate, $confirm_password);
 
             if ($stmt->execute()) {
-                echo "<script>alert('Sign up successful!'); window.location.href = 'SignIn.php';</script>";
+                echo "<script>alert('Sign up successful!'); window.location.href = 'Outline.php';</script>";
             } else {
                 echo "<script>alert('Error: " . $stmt->error . "');</script>";
             }
@@ -36,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -133,8 +139,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
                 <input type="text" name="first_name" placeholder="First Name" required>
                 <input type="text" name="last_name" placeholder="Last Name" required>
                 <input type="email" name="email" placeholder="Email" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                <input type="password" name="password" placeholder="Password" required minlength="8">
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required minlength="8">
                 <input type="date" name="birthdate" placeholder="Date of Birth" required>
                 <button type="submit" name="signup">Finish Sign Up</button>
             </div>
