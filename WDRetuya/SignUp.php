@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'DataBase.php'; // Include the database connection file
+include 'DataBase.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signup'])) {
     // Collect form data
